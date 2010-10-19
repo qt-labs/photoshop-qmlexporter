@@ -54,9 +54,52 @@ var rasterizeKey = 2;
 
 main();
 
+function hexValue(dec)
+{
+	var result;
+	switch (dec) {
+	case 10:
+		result = "a";
+		break;
+	case 11:
+		result = "b"
+		break;
+	case 12:
+		result = "c";
+		break;
+	case 13:
+		result = "d";
+		break;
+	case 14:
+		result = "e"
+	case 15:
+		result = "f"
+		break;
+	default:
+		result = dec
+		break;
+	}	
+	return result;
+}
+
 // Converts SolidColor to a QML color property
 function qtColor(color) {
-    return "Qt.rgba(" + color.rgb.red + "," + color.rgb.green + "," + color.rgb.blue + ", 1.0)";
+   var r = Math.floor(color.rgb.red)
+   var g = Math.floor(color.rgb.green);
+   var b = Math.floor(color.rgb.blue) 
+   var a = Math.floor(color.rgb.alpha * 255) 
+   var v1 = hexValue(Math.floor(r / 16));
+   var v2 = hexValue(r % 16);
+   var v3 = hexValue(Math.floor(g / 16));
+   var v4 = hexValue(g % 16);
+   var v5 = hexValue(Math.floor(b / 16));
+   var v6 = hexValue(b % 16);
+   if (a > 0) {
+	   var v7 = hexValue(Math.floor(a / 16));
+	   var v8 = hexValue(a % 16);
+	   return  "\"#" + v1 + v2 + v3 + v4 + v5 + v6 + v7 + v8 + "\"";   
+   }
+   return  "\"#" + v1 + v2 + v3 + v4 + v5 + v6 + "\"";   
 }
 
 function main() {
@@ -231,38 +274,38 @@ function exportChildren(dupObj, orgObj, exportInfo, dupDocRef, fileNamePrefix) {
         if (isText) qmlfile.write("    Text {\n");
         else qmlfile.write("    Image {\n");
         var filename = fileNameBody + ".png";
-        qmlfile.write("        id:" + fileNameBody + "\n");
+        qmlfile.write("        id: " + fileNameBody + "\n");
 
         var xoffset = currentLayer.bounds[0].as("px");
         var yoffset = currentLayer.bounds[1].as("px");
 
         if (isText) {
             var textItem = currentLayer.textItem;
-            qmlfile.write("        text:\"" + textItem.contents + "\"\n");
+            qmlfile.write("        text: \"" + textItem.contents + "\"\n");
 
             // ### Temporary hack to set font positioning
             // Using pointsize doesnt work for some reason and we need to
             // figure out which metric we need to use ascending, perhaps?
             yoffset -= textItem.size.as("px") / 4;
 
-            qmlfile.write("        font.pixelSize:" + Math.floor(textItem.size.as("px")) + "\n");
+            qmlfile.write("        font.pixelSize: " + Math.floor(textItem.size.as("px")) + "\n");
 
             //var fontfamily = app.textFonts.getByName(textitem.font);
-            qmlfile.write("        font.family:\"" + textItem.font + "\"\n");
+            qmlfile.write("        font.family: \"" + textItem.font + "\"\n");
 
-            if (textItem.font.indexOf("Bold") != -1) qmlfile.write("        font.bold:true\n");
+            if (textItem.font.indexOf("Bold") != -1) qmlfile.write("        font.bold: true\n");
 
-            if (textItem.font.indexOf("Italic") != -1) qmlfile.write("        font.italic:true\n");
+            if (textItem.font.indexOf("Italic") != -1) qmlfile.write("        font.italic: true\n");
 
-            qmlfile.write("        color:" + qtColor(currentLayer.textItem.color) + "\n");
-            qmlfile.write("        smooth:true\n");
+            qmlfile.write("        color: " + qtColor(currentLayer.textItem.color) + "\n");
+            qmlfile.write("        smooth: true\n");
         } else {
-            qmlfile.write("        source:\"images/" + filename + "\"\n");
+            qmlfile.write("        source: \"images/" + filename + "\"\n");
         }
 
-        qmlfile.write("        x:" + xoffset + "\n");
-        qmlfile.write("        y:" + yoffset + "\n");
-        qmlfile.write("        opacity:" + opacity + "\n");
+        qmlfile.write("        x: " + xoffset + "\n");
+        qmlfile.write("        y: " + yoffset + "\n");
+        qmlfile.write("        opacity: " + opacity + "\n");
         qmlfile.write("    }\n");
 
         // Save document
