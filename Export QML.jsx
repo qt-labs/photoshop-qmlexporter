@@ -121,9 +121,9 @@ function main() {
 	if (elementName.indexOf(".qml") == -1) 	// Append .qml unless not explicitly set
 		elementName += ".qml"
 	
-	var outputName = exportInfo.destination + "\\" + elementName;
+	var outputName = exportInfo.destination + "/" + elementName;
 
-    var imagefolder = new Folder(exportInfo.destination + "\\images\\");
+    var imagefolder = new Folder(exportInfo.destination + "/images/");
     imagefolder.create();
 
 	app.activeDocument.suspendHistory("export QML history", "");
@@ -310,7 +310,7 @@ function exportChildren(dupObj, orgObj, exportInfo, dupDocRef, fileNamePrefix) {
 
         // Save document
         if (!isText) {
-            var saveFile = new File(exportInfo.destination + "\\images\\" + filename);
+            var saveFile = new File(exportInfo.destination + "/images/" + filename);
             pngSaveOptions = new PNGSaveOptions();
             pngSaveOptions.interlaced = false;
             dupObj.saveAs(saveFile, pngSaveOptions, true, Extension.LOWERCASE);
