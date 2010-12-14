@@ -1,4 +1,4 @@
-﻿/*
+/*
 Photoshop to QML Exporter
 
 Version: 0.3
