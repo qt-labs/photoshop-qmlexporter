@@ -31,7 +31,7 @@ Item {
         opacity: 1
     }
     Text {
-        id: button__1
+        id: buttonlabel
         text: "Button"
         font.pixelSize: 30
         font.family: "Tahoma"
