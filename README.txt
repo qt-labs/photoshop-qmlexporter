@@ -1,16 +1,64 @@
-Layers are exported as image and text elements in the root.qml file
-and png images are dumped into the "images" subirectory. Note that
-files may be replaced without warnings.
+INSTALLATION AND USAGE NOTES
+
+* Version 0.1:
+- Initial version
+
+* Version 0.3:
+- Added support for exporting layer groups
+- Made updating the QML file optional
+- Fixed a bug preventing files with groups from exporting
+- Set Export as default button
+- Fixed a problem with unique ID's
+
+Usage:
+
+"Element name"
+- This is the name of the output QML file
+
+"Output Folder"
+- The folder containing exported files. Files are replaced 
+  without warning.
+
+"Rasterize text"
+- Force text layers to be exported as images and not text
+  elements
+
+"Group layers"
+- This will export each top-level group as a merged
+  QML Image element.
+
+"Export hidden"
+- If checked, hidden layers are exported but their
+  visible property is set to false
+
+"Export QML"
+- Uncheck this if you have modified your QML document by
+  hand but still want to re-export graphical assets.
+
+
+Output:
+- Layers and groups are exported as image elements in 
+  the root.qml file and png images are dumped into the 
+  images subirectory.
+- Text items are exported as Text elements
+
+
+
+Notes: 
+- Files are replaced without warning!
+- The script has only been tested on Photoshop CS5 and CS4 and 
+may or may not work on previous versions.
+
 
 Known issues:
-The font names are not really mapped accurately at the moment.
-
-Notes:
-The script has only been tested on Photoshop CS 4-5 and may or may not work on other versions. 
-
-Warning:
-The software is provided as is and NO warranty is given. Use at your own risk.
+- The font names are not really mapped accurately at the
+moment.
 
 
-To install, just double click on the file or copy the script into your photoshop scripts directory.
-This is usually located in Photoshop_path\Presets\Scripts.
+
+Installation: 
+
+Copy "Export QML.jsx" into your 
+  "Photoshop/Plugins/Presets/Scripts" 
+  directory. It should now show up under
+  "File/Scripts/Export QML"
