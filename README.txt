@@ -10,6 +10,9 @@ INSTALLATION AND USAGE NOTES
 - Set Export as default button
 - Fixed a problem with unique ID's
 
+* Version 0.4:
+- Added progressbar and cancel button
+
 Usage:
 
 "Element name"

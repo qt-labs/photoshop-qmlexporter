@@ -1,7 +1,7 @@
-/*
+﻿/*
 Photoshop to QML Exporter
 
-Version: 0.3
+Version: 0.4
 
 For information about Qt Quick itself:
 http://qt.nokia.com/products/qt-quick/
@@ -40,11 +40,15 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #target photoshop
 
-var mainDialog;
-var runButton = 1;
-var cancelButton = 2;
-var qmlfile;
-
+var mainDialog
+var progressPanel
+var runButton = 1
+var cancelButton = 2
+var qmlfile
+var layerCount = 0
+var layerIndex = 0
+var depth = 0
+var cancelExport = 0
 
 // Setting keys
 var appString = "QML Exporter - 1"
@@ -133,7 +137,20 @@ function main() {
     if (cancelButton == setupDialog(exportInfo)) 
         return 'cancel';
 
-    app.preferences.rulerUnits = Units.PIXELS
+
+    var myMaximumValue = 1.0;
+    var myProgressBarWidth = 300;
+    progressPanel = new Window('window', 'Exporting document to QML...');
+    progressPanel.myProgressBar = progressPanel.add('progressbar', [12, 12, myProgressBarWidth, 24], 0, myMaximumValue);
+    progressPanel.buttonCancel = progressPanel .add("button", undefined, "Cancel");
+
+    progressPanel.buttonCancel.onClick = function () {
+          cancelExport = true;
+          progressPanel.hide();
+    }
+    progressPanel.show();
+
+   app.preferences.rulerUnits = Units.PIXELS
 
     var documentName = app.activeDocument.name;
     app.activeDocument = app.documents[documentName];
@@ -153,7 +170,7 @@ function main() {
     
     var exportQML = mainDialog.exportQML.value
 
-    if (exportQML) {
+    if (exportQML && !cancelExport) {
         qmlfile = new File(outputName);
         qmlfile.encoding = "UTF8";
         qmlfile.open("w", "TEXT", "");
@@ -163,6 +180,7 @@ function main() {
         qmlfile.write("    height:" + app.activeDocument.height.as("px") + "\n");
     }
 
+    countLayers(documentCopy) // For progressBar
     exportChildren(documentCopy, app.documents[documentName], exportInfo, documentCopy, exportInfo.fileNamePrefix);
 
     if (exportQML) {
@@ -170,6 +188,7 @@ function main() {
         qmlfile.write("}\n");
         qmlfile.close();
     }
+    Panel.hide();
 }
 
 
@@ -280,6 +299,20 @@ function setupDialog(exportInfo) {
     return result;
 }
 
+function countLayers(obj) {
+    // Even when grouping layers, we export all layers at depth == 0
+    if (!mainDialog.exportByGroup.value || depth == 0) {
+       for (var i = 0; i < obj.artLayers.length; i++) {
+           layerCount++;
+       }
+    }
+    depth++;
+    for (var i = 0; i < obj.layerSets.length; i++) { // Recursive
+        countLayers(obj.layerSets[i]);
+        layerCount++;
+    }
+}
+
 function hideAll(obj) {
     for (var i = 0; i < obj.artLayers.length; i++) {
         obj.artLayers[i].allLocked = false;
@@ -292,7 +325,7 @@ function hideAll(obj) {
 
 function exportChildren(dupObj, orgObj, exportInfo, dupDocRef, fileNamePrefix) {
      var exportQML = mainDialog.exportQML.value
-        
+
     // Track names to detect duplicates
     var names = new Array;
     var uniqueCounter = 1;
@@ -300,8 +333,8 @@ function exportChildren(dupObj, orgObj, exportInfo, dupDocRef, fileNamePrefix) {
     if (!mainDialog.exportByGroup.value)
         hideAll(dupObj)
     
-    for (var i = dupObj.layers.length - 1; i >= 0; i--) {
-
+    for (var i = dupObj.layers.length - 1; i >= 0 && !cancelExport ; i--) {
+        progressPanel.myProgressBar.value = (1+layerIndex++)/layerCount
         var currentLayer = dupObj.layers[i];
         // Ensure unique layer names
         while (names[currentLayer.name]) {
@@ -406,9 +439,8 @@ function exportChildren(dupObj, orgObj, exportInfo, dupDocRef, fileNamePrefix) {
         // Close tempfile
         documentCopyTmp.close(SaveOptions.DONOTSAVECHANGES);
 
-     if (!mainDialog.exportByGroup.value)
-        dupObj.layers[i].visible = false
-
+        if (!mainDialog.exportByGroup.value)
+            dupObj.layers[i].visible = false
     }
 
     for (var i = 0; i < dupObj.layerSets.length; i++) {
