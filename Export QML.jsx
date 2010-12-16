@@ -47,7 +47,6 @@ var cancelButton = 2
 var qmlfile
 var layerCount = 0
 var layerIndex = 0
-var depth = 0
 var cancelExport = 0
 
 // Setting keys
@@ -301,14 +300,12 @@ function setupDialog(exportInfo) {
 
 function countLayers(obj) {
     // Even when grouping layers, we export all layers at depth == 0
-    if (!mainDialog.exportByGroup.value || depth == 0) {
-       for (var i = 0; i < obj.artLayers.length; i++) {
-           layerCount++;
-       }
+    for (var i = 0; i < obj.artLayers.length; i++) {
+       layerCount++;
     }
-    depth++;
     for (var i = 0; i < obj.layerSets.length; i++) { // Recursive
-        countLayers(obj.layerSets[i]);
+        if (!mainDialog.exportByGroup.value)
+            countLayers(obj.layerSets[i]);
         layerCount++;
     }
 }
@@ -334,7 +331,7 @@ function exportChildren(dupObj, orgObj, exportInfo, dupDocRef, fileNamePrefix) {
         hideAll(dupObj)
     
     for (var i = dupObj.layers.length - 1; i >= 0 && !cancelExport ; i--) {
-        progressPanel.myProgressBar.value = (1+layerIndex++)/layerCount
+        progressPanel.myProgressBar.value = (layerIndex++)/layerCount
         var currentLayer = dupObj.layers[i];
         // Ensure unique layer names
         while (names[currentLayer.name]) {
