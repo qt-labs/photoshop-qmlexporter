@@ -9,8 +9,7 @@ http://qt.nokia.com/products/qt-quick/
 Author: Jens Bache-wiig
 contact: jens.bache-wiig@nokia.com
 
-Copyright (c) 2010, Nokia
-All rights reserved.
+Copyright (c) 2013 Digia Plc and/or its subsidiary(-ies).
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
