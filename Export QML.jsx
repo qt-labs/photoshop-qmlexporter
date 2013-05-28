@@ -4,10 +4,10 @@ Photoshop to QML Exporter
 Version: 0.4
 
 For information about Qt Quick itself:
-http://qt.nokia.com/products/qt-quick/
+http://qt-project.org/doc/qt-5.0/qtquick/qtquick-index.html
 
 Author: Jens Bache-wiig
-contact: jens.bache-wiig@nokia.com
+contact: jens.bache-wiig@digia.com
 
 Copyright (c) 2013 Digia Plc and/or its subsidiary(-ies).
 
